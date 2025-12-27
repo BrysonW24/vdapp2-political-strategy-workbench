@@ -75,53 +75,72 @@ export async function fetchABCNews(category: 'politics' | 'federal' | 'business'
 
       // Strong political indicators - must have at least one
       const strongPoliticalKeywords = [
-        // Core Political Terms
-        'parliament', 'minister', 'election', 'political', 'prime minister', 'pm ',
-        'albanese', 'dutton', 'labor', 'liberal', 'greens', 'government',
-        'senate', 'mp', 'federal', 'state', 'legislation', 'policy', 'council',
+        // Core Political Terms - most specific
+        'parliament', 'minister', 'election', 'prime minister',
+        'albanese', 'dutton', 'labor party', 'liberal party', 'greens',
+        'senate', 'federal government', 'state government', 'legislation',
         'royal commission', 'budget', 'treasury', 'diplomacy', 'sanctions',
         'treaty', 'referendum', 'coalition', 'opposition', 'cabinet',
 
-        // Policy Areas
-        'energy policy', 'climate', 'renewable', 'environment', 'regulation',
-        'environmental policy', 'climate change', 'emissions',
+        // Policy Areas - specific to government action
+        'energy policy', 'climate policy', 'environmental policy',
+        'climate change', 'emissions target', 'renewable energy policy',
 
         // Elections & Campaigns
-        'elections', 'electoral', 'campaign', 'candidate', 'voting', 'ballot',
-        'political party', 'political parties', 'pre-selection', 'polling',
+        'federal election', 'state election', 'electoral', 'campaign',
+        'candidate', 'voting', 'ballot', 'political party', 'pre-selection',
 
-        // International/Security
-        'israel', 'palestine', 'ukraine', 'china', 'military', 'defence',
-        'foreign affairs', 'international relations', 'trade agreement',
-        'national security', 'asio', 'intelligence', 'terrorism', 'security',
-
-        // Emergency Services & Governance
-        'firefighter', 'emergency services', 'volunteer', 'disaster relief',
-
-        // Political Movements & Leadership
-        'political leadership', 'political movement', 'political debate',
-        'political donation', 'political ideology', 'political prisoner',
+        // International/Diplomacy - only when related to government
+        'foreign minister', 'defence minister', 'foreign affairs',
+        'international relations', 'trade agreement', 'trade policy',
+        'national security', 'asio', 'intelligence agency',
 
         // Government Functions
-        'federal government', 'state government', 'government funding',
-        'government policy', 'parliamentary', 'ministerial',
+        'government funding', 'government policy', 'parliamentary',
+        'ministerial', 'government minister', 'shadow minister',
 
-        // Specific Australian Context
-        'aboriginal services', 'indigenous policy', 'constitutional',
-        'health board', 'public service', 'government department',
+        // Specific Australian Political Context
+        'indigenous policy', 'constitutional', 'aboriginal affairs',
 
         // Current Parliamentarians (dynamically updated from Parliament House)
         ...parliamentarianKeywords
       ];
 
-      // Exclude sports/entertainment articles
+      // Exclude non-political news
       const nonPoliticalKeywords = [
+        // Sports
         'cricket', 'football', 'rugby', 'sport', 'match', 'player', 'game',
-        'wicket', 'innings', 'test', 'score', 'coach', 'team', 'race', 'horse'
+        'wicket', 'innings', 'test match', 'score', 'coach', 'team', 'race',
+
+        // Crime/Accidents (unless political)
+        'tourist', 'rescued', 'fall', 'rocks', 'assault', 'alleged assault',
+        'fighting for life', 'critical condition', 'ambulance',
+
+        // Weather/Natural Disasters (unless related to government response)
+        'bushfire', 'water restrictions', 'dam storage', 'rainfall',
+        'heavy rain', 'flooding', 'weather',
+
+        // General News
+        'volunteers', 'lifesaving', 'mosque', 'church', 'beach',
+        'chatgpt', 'using chatgpt', 'holiday',
+
+        // International conflicts (unless Australian government involved)
+        'thailand', 'cambodia', 'myanmar', 'syria', 'somaliland'
       ];
 
+      // Require strong political keyword AND check for exclusions
       const hasStrongPolitical = strongPoliticalKeywords.some(keyword => content.includes(keyword));
-      const hasNonPolitical = nonPoliticalKeywords.some(keyword => content.includes(keyword));
+      const hasNonPolitical = nonPoliticalKeywords.some(keyword => {
+        // Only exclude if the non-political keyword appears AND no political context
+        if (content.includes(keyword)) {
+          // Check if there's political context nearby
+          const hasPoliticalContext = strongPoliticalKeywords.some(polKeyword =>
+            content.includes(polKeyword)
+          );
+          return !hasPoliticalContext; // Exclude only if no political context
+        }
+        return false;
+      });
 
       const isPolitical = hasStrongPolitical && !hasNonPolitical;
 
