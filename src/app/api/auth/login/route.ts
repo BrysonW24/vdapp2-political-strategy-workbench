@@ -31,7 +31,8 @@ export async function POST(request: NextRequest) {
     // Create response with cookie
     const response = NextResponse.json({
       success: true,
-      user: authData.state.user
+      user: authData.state.user,
+      accessToken: 'demo-token-' + Date.now() // Simple token for demo
     })
 
     // Set the auth-storage cookie
