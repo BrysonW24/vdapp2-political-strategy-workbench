@@ -46,9 +46,9 @@ export async function getYoutubeTranscript(url: string): Promise<string> {
 function extractVideoId(url: string): string | null {
   // Handle different YouTube URL formats
   const patterns = [
-    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/)([^&\?\/]+)/,
-    /youtube\.com\/embed\/([^&\?\/]+)/,
-    /youtube\.com\/v\/([^&\?\/]+)/
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/)([^&?/]+)/,
+    /youtube\.com\/embed\/([^&?/]+)/,
+    /youtube\.com\/v\/([^&?/]+)/
   ];
 
   for (const pattern of patterns) {

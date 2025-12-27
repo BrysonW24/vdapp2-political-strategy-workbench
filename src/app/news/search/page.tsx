@@ -208,13 +208,13 @@ export default function AdvancedSearchPage() {
 
               <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg space-y-2">
                 <p className="text-xs text-blue-800">
-                  <strong>Quick Search:</strong> Leave all filters blank and click "Search" to see all available articles.
+                  <strong>Quick Search:</strong> Leave all filters blank and click &ldquo;Search&rdquo; to see all available articles.
                 </p>
                 <p className="text-xs text-blue-700">
                   <strong>Historical Search:</strong> Enter a date range to search the archive (requires paid plan). Free tier searches only the latest ~35 articles.
                 </p>
                 <p className="text-xs text-blue-600">
-                  <strong>Example:</strong> Search "china" from 2024-01-01 to today for hundreds of historical articles (paid plan).
+                  <strong>Example:</strong> Search &ldquo;china&rdquo; from 2024-01-01 to today for hundreds of historical articles (paid plan).
                 </p>
               </div>
 

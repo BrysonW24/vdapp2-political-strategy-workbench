@@ -33,7 +33,7 @@ export default function ThoughtLeadershipOutput({ transcripts, quotes }: Thought
           {quotes.map((quote, idx) => (
             <div key={idx} className="p-5 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border-l-4 border-purple-500">
               <p className="text-commbank-gray-800 font-medium mb-3 italic">
-                "{quote.quote}" <span className="text-purple-600 font-bold">[{quote.transcript} - {quote.speaker}]</span>
+                &ldquo;{quote.quote}&rdquo; <span className="text-purple-600 font-bold">[{quote.transcript} - {quote.speaker}]</span>
               </p>
               <div className="bg-white p-4 rounded-lg">
                 <p className="text-sm font-bold text-commbank-gray-700 mb-1">Strategic Implication:</p>

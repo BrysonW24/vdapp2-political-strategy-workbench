@@ -236,7 +236,7 @@ export default function ThoughtLeadership() {
                   <div className="flex-1 space-y-3">
                     <div className="p-4 bg-yellow-50 rounded-xl border-l-2 border-yellow-400">
                       <p className="text-xs font-bold text-gray-600 mb-2">{item.source}</p>
-                      <p className="text-gray-800 italic">"{item.quote}"</p>
+                      <p className="text-gray-800 italic">&ldquo;{item.quote}&rdquo;</p>
                     </div>
                     <div className="p-4 bg-blue-50 rounded-xl">
                       <p className="text-xs font-bold text-blue-900 mb-2">Strategic Implication:</p>
