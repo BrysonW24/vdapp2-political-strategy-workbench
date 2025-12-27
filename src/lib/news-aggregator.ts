@@ -31,7 +31,7 @@ const ABC_RSS_FEEDS = {
 
 // Priority Australian news sources for NewsData.io
 // These are the most authoritative and reliable Australian news outlets
-const PRIORITY_AU_DOMAINS = [
+const _PRIORITY_AU_DOMAINS = [
   'abc.net.au',           // Priority 3795 - ABC News (public broadcaster)
   'smh.com.au',           // Priority 2251 - Sydney Morning Herald
   'theage.com.au',        // Priority 44145 - The Age
