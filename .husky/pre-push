@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Run full test suite with coverage
+npm run test:coverage -- --run
+
+# Build check
+npm run build

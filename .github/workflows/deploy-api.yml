@@ -1,0 +1,58 @@
+name: Deploy API Server
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'applications/api-server/**'
+      - 'shared-packages/**'
+      - 'pnpm-lock.yaml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build API
+        run: pnpm build --filter=api-server
+
+      - name: Build Docker image
+        run: docker build -f Dockerfile.api -t api-server:${{ github.sha }} .
+
+      - name: Push to registry
+        run: |
+          echo "TODO: Configure your Docker registry"
+          # docker push api-server:${{ github.sha }}
+
+      - name: Deploy
+        run: |
+          echo "TODO: Configure your deployment pipeline"
+          # kubectl set image deployment/api-server api=api-server:${{ github.sha }}

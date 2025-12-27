@@ -1,0 +1,253 @@
+// Prisma Schema for API Server
+// This defines the database models and relationships
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model with authentication and profile data
+model User {
+  id                String    @id @default(uuid())
+  email             String    @unique
+  password          String
+  firstName         String?
+  lastName          String?
+  role              Role      @default(USER)
+  isActive          Boolean   @default(true)
+  isEmailVerified   Boolean   @default(false)
+  emailVerifiedAt   DateTime?
+  lastLoginAt       DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  refreshTokens           RefreshToken[]
+  passwordResetTokens     PasswordResetToken[]
+  emailVerificationTokens EmailVerificationToken[]
+  analyses                Analysis[]
+  campaigns               Campaign[]
+
+  @@map("users")
+}
+
+// Refresh token model for JWT token refresh
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("refresh_tokens")
+}
+
+// Password reset token model
+model PasswordResetToken {
+  id        String    @id @default(uuid())
+  token     String    @unique
+  userId    String
+  expiresAt DateTime
+  used      Boolean   @default(false)
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("password_reset_tokens")
+}
+
+// Email verification token model
+model EmailVerificationToken {
+  id         String    @id @default(uuid())
+  token      String    @unique
+  userId     String
+  expiresAt  DateTime
+  verified   Boolean   @default(false)
+  verifiedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("email_verification_tokens")
+}
+
+// User roles enum
+enum Role {
+  USER
+  ADMIN
+  MODERATOR
+  ANALYST
+  STRATEGIST
+}
+
+// News Article model for tracking political and business news
+model NewsArticle {
+  id          String   @id @default(uuid())
+  title       String
+  content     String   @db.Text
+  source      String
+  sourceUrl   String?
+  publishedAt DateTime
+  category    ArticleCategory
+  sentiment   Sentiment?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  analyses    Analysis[]
+  tags        ArticleTag[]
+
+  @@map("news_articles")
+  @@index([category, publishedAt])
+  @@index([sentiment])
+}
+
+// Analysis model for AI-generated insights
+model Analysis {
+  id            String   @id @default(uuid())
+  articleId     String
+  analysisType  AnalysisType
+  summary       String   @db.Text
+  keyPoints     String[] // Array of key insights
+  sentiment     Sentiment
+  confidence    Float    // 0-1 confidence score
+  metadata      Json?    // Additional AI analysis data
+  createdBy     String?  // Optional user who triggered analysis
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  article       NewsArticle @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  user          User?       @relation(fields: [createdBy], references: [id])
+
+  @@map("analyses")
+  @@index([articleId])
+  @@index([analysisType])
+}
+
+// Campaign model for tracking political/business campaigns
+model Campaign {
+  id          String   @id @default(uuid())
+  name        String
+  description String   @db.Text
+  startDate   DateTime
+  endDate     DateTime?
+  status      CampaignStatus @default(ACTIVE)
+  ownerId     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  owner       User     @relation(fields: [ownerId], references: [id])
+  strategies  Strategy[]
+
+  @@map("campaigns")
+  @@index([status, startDate])
+}
+
+// Strategy model for campaign strategies
+model Strategy {
+  id          String   @id @default(uuid())
+  campaignId  String
+  title       String
+  description String   @db.Text
+  priority    Priority @default(MEDIUM)
+  status      StrategyStatus @default(DRAFT)
+  metrics     Json?    // Key metrics and KPIs
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  campaign    Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@map("strategies")
+  @@index([campaignId])
+  @@index([status])
+}
+
+// Tag model for categorizing articles
+model Tag {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+
+  // Relations
+  articles  ArticleTag[]
+
+  @@map("tags")
+}
+
+// Junction table for many-to-many relationship
+model ArticleTag {
+  articleId String
+  tagId     String
+  createdAt DateTime @default(now())
+
+  // Relations
+  article   NewsArticle @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  tag       Tag         @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([articleId, tagId])
+  @@map("article_tags")
+}
+
+// Enums
+enum ArticleCategory {
+  POLITICS
+  BUSINESS
+  TECHNOLOGY
+  SOCIAL
+  ENVIRONMENT
+  INTERNATIONAL
+  OTHER
+}
+
+enum Sentiment {
+  POSITIVE
+  NEGATIVE
+  NEUTRAL
+  MIXED
+}
+
+enum AnalysisType {
+  SUMMARY
+  SENTIMENT
+  KEY_POINTS
+  TREND
+  RISK_ASSESSMENT
+  OPPORTUNITY
+}
+
+enum CampaignStatus {
+  PLANNING
+  ACTIVE
+  PAUSED
+  COMPLETED
+  ARCHIVED
+}
+
+enum StrategyStatus {
+  DRAFT
+  REVIEW
+  APPROVED
+  ACTIVE
+  COMPLETED
+  REJECTED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
