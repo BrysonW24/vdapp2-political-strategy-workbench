@@ -31,18 +31,19 @@ const ABC_RSS_FEEDS = {
 
 // Priority Australian news sources for NewsData.io
 // These are the most authoritative and reliable Australian news outlets
-const _PRIORITY_AU_DOMAINS = [
-  'abc.net.au',           // Priority 3795 - ABC News (public broadcaster)
-  'smh.com.au',           // Priority 2251 - Sydney Morning Herald
-  'theage.com.au',        // Priority 44145 - The Age
-  'afr.com',              // Priority 45911 - Australian Financial Review
-  'theguardian.com',      // Priority 106 - The Guardian Australia
-  '9news.com.au',         // Priority 19202 - Nine News
-  '7news.com.au',         // Priority 23845 - Seven News
-  'brisbanetimes.com.au', // Priority 22163 - Brisbane Times
-  'theconversation.com',  // Priority 1694 - The Conversation (academic)
-  'crikey.com.au',        // Priority 43327 - Crikey (investigative)
-].join(',');
+// Currently unused but kept for reference
+// const PRIORITY_AU_DOMAINS = [
+//   'abc.net.au',           // Priority 3795 - ABC News (public broadcaster)
+//   'smh.com.au',           // Priority 2251 - Sydney Morning Herald
+//   'theage.com.au',        // Priority 44145 - The Age
+//   'afr.com',              // Priority 45911 - Australian Financial Review
+//   'theguardian.com',      // Priority 106 - The Guardian Australia
+//   '9news.com.au',         // Priority 19202 - Nine News
+//   '7news.com.au',         // Priority 23845 - Seven News
+//   'brisbanetimes.com.au', // Priority 22163 - Brisbane Times
+//   'theconversation.com',  // Priority 1694 - The Conversation (academic)
+//   'crikey.com.au',        // Priority 43327 - Crikey (investigative)
+// ].join(',');
 
 /**
  * Fetch news from ABC News RSS feeds
